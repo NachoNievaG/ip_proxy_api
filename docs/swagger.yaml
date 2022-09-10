@@ -1,0 +1,138 @@
+definitions:
+  country.IPCount:
+    properties:
+      country:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  country.IPResponse:
+    properties:
+      as:
+        type: string
+      asn:
+        type: string
+      city_name:
+        type: string
+      countr_code:
+        type: string
+      countr_name:
+        type: string
+      domain:
+        type: string
+      ip_from:
+        type: string
+      ip_to:
+        type: string
+      isp:
+        type: string
+      proxy_type:
+        type: string
+      region_name:
+        type: string
+      usage_type:
+        type: string
+    type: object
+  country.ISPCount:
+    properties:
+      isp:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  web.ResponseError:
+    properties:
+      result: {}
+      status:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Providing useful information from ip 2 proxy db
+  title: IP Proxy API
+  version: "1.0"
+paths:
+  /countries/{countryCode}/ip/count:
+    get:
+      consumes:
+      - application/json
+      description: using the country code, count every ip given in the database.
+      parameters:
+      - description: Country Code
+        in: path
+        name: countryCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/country.IPCount'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseError'
+      summary: Given a country code, retrieve the IP count
+      tags:
+      - Country
+  /countries/CH/top_ten_isp:
+    get:
+      consumes:
+      - application/json
+      description: using the country code, obtain the top ten internet service providers
+        from Switzerland, descending order.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/country.ISPCount'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseError'
+      summary: Retrieve Top 10 internet providers from Switzerland
+      tags:
+      - Country
+  /ip/{ip}:
+    get:
+      consumes:
+      - application/json
+      description: After receiving the IP, it is validated to ensure it is a proper
+        address, then its content is used to retrieve information related to it, such
+        as its country code.
+      parameters:
+      - description: IP address
+        in: path
+        name: ip
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/country.IPResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseError'
+      summary: Giving an IP as an input, return every detail related to it
+      tags:
+      - Country
+swagger: "2.0"

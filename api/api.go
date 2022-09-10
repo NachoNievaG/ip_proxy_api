@@ -11,7 +11,7 @@ func Start(port string) {
 	countryGTW := country.NewCountryGateway(countryRepo)
 	handler := country.NewCountriesHTTPService(countryGTW)
 
-	r := routes(handler)
+	r := routes(handler, port)
 	server := newServer(port, r)
 
 	server.Start()

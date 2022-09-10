@@ -1,0 +1,206 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API Providing useful information from ip 2 proxy db",
+        "title": "IP Proxy API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "paths": {
+        "/countries/CH/top_ten_isp": {
+            "get": {
+                "description": "using the country code, obtain the top ten internet service providers from Switzerland, descending order.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Country"
+                ],
+                "summary": "Retrieve Top 10 internet providers from Switzerland",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/country.ISPCount"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/countries/{countryCode}/ip/count": {
+            "get": {
+                "description": "using the country code, count every ip given in the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Country"
+                ],
+                "summary": "Given a country code, retrieve the IP count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Country Code",
+                        "name": "countryCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/country.IPCount"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/ip/{ip}": {
+            "get": {
+                "description": "After receiving the IP, it is validated to ensure it is a proper address, then its content is used to retrieve information related to it, such as its country code.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Country"
+                ],
+                "summary": "Giving an IP as an input, return every detail related to it",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "IP address",
+                        "name": "ip",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/country.IPResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "country.IPCount": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "country.IPResponse": {
+            "type": "object",
+            "properties": {
+                "as": {
+                    "type": "string"
+                },
+                "asn": {
+                    "type": "string"
+                },
+                "city_name": {
+                    "type": "string"
+                },
+                "countr_code": {
+                    "type": "string"
+                },
+                "countr_name": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "ip_from": {
+                    "type": "string"
+                },
+                "ip_to": {
+                    "type": "string"
+                },
+                "isp": {
+                    "type": "string"
+                },
+                "proxy_type": {
+                    "type": "string"
+                },
+                "region_name": {
+                    "type": "string"
+                },
+                "usage_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "country.ISPCount": {
+            "type": "object",
+            "properties": {
+                "isp": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "web.ResponseError": {
+            "type": "object",
+            "properties": {
+                "result": {},
+                "status": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
